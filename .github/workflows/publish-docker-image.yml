@@ -36,7 +36,7 @@ jobs:
       - name: Save Docker image to a tar file
         run: |
           RELEASE_TAG=${GITHUB_REF#refs/tags/}
-          docker save infmonkeys/monkey-tools-bepipred3.0-predictor:$RELEASE_TAG -o monkey-tools-bepipred3.0-predictor-$RELEASE_TAG.tar.gz
+          docker save infmonkeys/monkey-tools-bepipred3.0-predictor:$RELEASE_TAG | gzip > monkey-tools-bepipred3.0-predictor-$RELEASE_TAG.tar.gz
 
       - name: Install TOS CLI And Upload to Tos
         env:
