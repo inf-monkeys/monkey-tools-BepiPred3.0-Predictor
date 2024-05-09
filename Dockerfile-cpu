@@ -1,0 +1,29 @@
+FROM python:3.10-slim
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Shanghai
+
+RUN apt-get update && \
+    apt-get install vim wget curl build-essential  -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+RUN mkdir -p ~/.cache/torch/hub/checkpoints
+
+RUN curl https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-contact-regression.pt -o ~/.cache/torch/hub/checkpoints/esm2_t33_650M_UR50D-contact-regression.pt
+RUN curl https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t33_650M_UR50D.pt -o ~/.cache/torch/hub/checkpoints/esm2_t33_650M_UR50D.pt
+
+
+# Install Python dependencies
+COPY requirements.txt requirements.txt
+
+RUN pip3 install -r requirements.txt && rm -rf /root/.cache/pip
+
+COPY . .
+
+EXPOSE 5000
+
+# Run the app
+CMD ["python3", "app.py"]
