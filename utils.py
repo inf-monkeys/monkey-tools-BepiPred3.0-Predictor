@@ -152,6 +152,7 @@ class OSSClient:
 config_data = load_config("config.yaml")
 port = config_data.get("port", 5000)
 s3_config = config_data.get("s3")
+proxy_config = config_data.get("proxy")
 
 aws_access_key_id = s3_config.get("accessKeyId")
 aws_access_key_secret = s3_config.get("secretAccessKey")
@@ -168,3 +169,21 @@ s3_client = OSSClient(
     bucket_name=bucket_name,
     base_url=base_url,
 )
+
+if proxy_config.get("enabled", False):
+    proxy_url = proxy_config.get("url")
+    if not proxy_url:
+        raise ValueError("Proxy URL is not provided")
+    os.environ["http_proxy"] = proxy_url
+    os.environ["https_proxy"] = proxy_url
+    os.environ["HTTP_PROXY"] = proxy_url
+    os.environ["HTTPS_PROXY"] = proxy_url
+
+    exclude = proxy_config.get("exclude", [])
+    if exclude:
+        if not isinstance(exclude, list):
+            raise ValueError("Exclude should be a list of strings")
+
+    # Add localhost
+    exclude.append("localhost")
+    exclude.append("127.0.0.1")
