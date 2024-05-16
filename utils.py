@@ -152,7 +152,7 @@ class OSSClient:
 config_data = load_config("config.yaml")
 port = config_data.get("port", 5000)
 s3_config = config_data.get("s3")
-proxy_config = config_data.get("proxy")
+proxy_config = config_data.get("proxy", {})
 
 aws_access_key_id = s3_config.get("accessKeyId")
 aws_access_key_secret = s3_config.get("secretAccessKey")
