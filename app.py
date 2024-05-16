@@ -8,8 +8,7 @@ from flask import Flask, request, jsonify
 from flask_restx import Api, Resource
 import traceback
 from loguru import logger
-from utils import s3_client, DOWNLOAD_FOLDER, convert_csv_to_json, port
-from collections.abc import Sequence
+from utils import s3_client, convert_csv_to_json, port
 
 app = Flask(__name__)
 api = Api(
@@ -308,7 +307,7 @@ class Bepipred30PredictorResource(Resource):
     def post(self):
         file_type = request.json.get("file_type")
         file_url = request.json.get("file_url")
-        if isinstance(file_url, Sequence):
+        if isinstance(file_url, list):
             file_url = file_url[0]
         logger.info(
             f"Start to run bepipred3.0 predictor: file_type={file_type}, file_url={file_url}"
